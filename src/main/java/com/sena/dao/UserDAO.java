@@ -14,7 +14,7 @@ public class UserDAO {
     private static final Logger LOGGER = Logger.getLogger(LoginController.class.getName());
     // Create
     public boolean insert(User user) {
-        LOGGER.info("insertando");
+        
         String sql = "INSERT INTO user (name, email, password, role) VALUES (?, ?, ?, ?)";
         try (Connection conn = ConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -24,7 +24,7 @@ public class UserDAO {
             stmt.setString(3, user.getPassword());
             stmt.setString(4, user.getRole());
             
-            LOGGER.info(stmt.toString());
+            
 
             return stmt.executeUpdate() > 0;
 
@@ -39,7 +39,7 @@ public class UserDAO {
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM user WHERE deleted_at IS NULL";
-        LOGGER.info("list useres");
+        
 
         try (Connection conn = ConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -75,7 +75,7 @@ public class UserDAO {
 
             if (rs.next()) {
                 return new User(
-                        rs.getInt("user_id"),
+                        rs.getInt("id"),
                         rs.getString("name"),
                         rs.getString("email"),
                         rs.getString("password"),
@@ -93,7 +93,7 @@ public class UserDAO {
 
     // Update
     public boolean update(User user) {
-        LOGGER.info("update method");
+        
         String sql = "UPDATE user SET name = ?, email = ?, password = ?, role = ? WHERE id = ?";
         try (Connection conn = ConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -103,7 +103,7 @@ public class UserDAO {
             stmt.setString(3, user.getPassword());
             stmt.setString(4, user.getRole());
             stmt.setInt(5, user.getId());
-            LOGGER.info(stmt.toString());
+            
             return stmt.executeUpdate() > 0;
 
         } catch (SQLException e) {

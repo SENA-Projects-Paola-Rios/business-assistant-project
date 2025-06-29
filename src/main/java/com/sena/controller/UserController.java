@@ -9,6 +9,8 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
+import com.google.gson.Gson;
+
 
 public class UserController extends HttpServlet {
 
@@ -33,10 +35,27 @@ public class UserController extends HttpServlet {
             case "delete":
                 deleteUser(request, response);
                 break;
+            case "json":
+                getUserAsJson(request, response);
+                break;
             default:
                 listUsers(request, response);
                 break;
         }
+    }
+    
+    private void getUserAsJson(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        User user = userDAO.findById(id);
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        Gson gson = new Gson();
+        String json = gson.toJson(user);
+
+        response.getWriter().write(json);
     }
 
     private void listUsers(HttpServletRequest request, HttpServletResponse response)
@@ -72,7 +91,7 @@ public class UserController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        LOGGER.info("saving user");
+        
         String idParam = request.getParameter("id");
         String name = request.getParameter("name");
         String email = request.getParameter("email");
@@ -80,18 +99,18 @@ public class UserController extends HttpServlet {
         String role = request.getParameter("role");
 
         if (idParam == null || idParam.isEmpty()) {
-            LOGGER.info("create");
+            
             // Create
             User newUser = new User(0, name, email, password, role, null);
             userDAO.insert(newUser);
         } else {
-            LOGGER.info("update");
+            
             // Update
             int id = Integer.parseInt(idParam);
             User updatedUser = new User(id, name, email, password, role, null);
             userDAO.update(updatedUser);
         }
 
-        response.sendRedirect("UserController");
+        response.sendRedirect("UserController?action=list");
     }
 }
