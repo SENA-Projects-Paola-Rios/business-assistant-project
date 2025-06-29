@@ -1,0 +1,23 @@
+[33mcommit 1988ef0491aba11cdaf4c73ecc8aae8cdc29cf54[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32muser-module[m[33m, [m[1;31morigin/user-module[m[33m)[m
+Author: Paola Rios <paomil999@gmail.com>
+Date:   Sun Jun 29 11:12:25 2025 -0500
+
+    feat: add user model
+
+[33mcommit 6be33cc4e178b27f334284f7474288a94590ef12[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m
+Author: Paola Rios <paomil999@gmail.com>
+Date:   Sun Jun 29 11:05:02 2025 -0500
+
+    docs: add new netbeans java project structure with mvc folders and packages
+
+[33mcommit 4d886f5dca354849a09ff1cdf15feaa49df82c64[m[33m ([m[1;32mmaster[m[33m)[m
+Author: Paola Ríos <46171615+paolaandrearios@users.noreply.github.com>
+Date:   Fri Jun 27 14:58:54 2025 -0500
+
+    docs: Update README.md
+
+[33mcommit 13dc635f628f79234b1284eec432075dcbe97e72[m
+Author: Paola Ríos <46171615+paolaandrearios@users.noreply.github.com>
+Date:   Fri Jun 27 14:28:35 2025 -0500
+
+    Initial commit
