@@ -28,4 +28,7 @@ mv "$TARGET_PATH" "$TOMCAT_WEBAPPS/"
 
 # 4. Confirmación final
 echo "✅ Despliegue completo. Reinicia Tomcat para aplicar los cambios."
+
+ tail -f C:/Tomcat9.0/logs/catalina.2025-06-29.log
+
 exit 0

@@ -1,16 +1,20 @@
 package com.sena.util;
 
+import com.sena.controller.LoginController;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.io.InputStream;
+import java.util.logging.Logger;
 
 public class ConnectionManager {
 
     private static String URL;
     private static String USER;
     private static String PASSWORD;
+    
+    private static final Logger LOGGER = Logger.getLogger(LoginController.class.getName());
 
     static {
         try (InputStream input = ConnectionManager.class.getClassLoader().getResourceAsStream("config.properties")) {
@@ -18,14 +22,23 @@ public class ConnectionManager {
             if (input == null) {
                 throw new RuntimeException("Cannot find config.properties");
             }
+            LOGGER.info("***************/////////////////////////*****************");
             prop.load(input);
             URL = prop.getProperty("db.url");
             USER = prop.getProperty("db.user");
             PASSWORD = prop.getProperty("db.password");
+            LOGGER.info(URL);
+            LOGGER.info(USER);
+            LOGGER.info(PASSWORD);
+            
+           
 
         } catch (Exception e) {
-            System.out.println("Error loading database configuration");
+            LOGGER.info("Error loading database configuration");
             e.printStackTrace();
+            LOGGER.info(e.getLocalizedMessage());
+            LOGGER.info(e.getMessage());
+            
         }
     }
 

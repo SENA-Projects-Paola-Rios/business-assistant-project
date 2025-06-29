@@ -1,18 +1,21 @@
 package com.sena.dao;
 
-import com.sena.model.User;
+import com.sena.controller.LoginController;
 import com.sena.util.ConnectionManager;
+import com.sena.model.User;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class UserDAO {
 
-    // CREATE
+    private static final Logger LOGGER = Logger.getLogger(LoginController.class.getName());
+    // Create
     public boolean insert(User user) {
-        String sql = "INSERT INTO usuario (nombre, correo_electronico, contrasena, rol, restriccion_acceso, is_deleted) " +
-                     "VALUES (?, ?, ?, ?, ?, false)";
+        LOGGER.info("insertando");
+        String sql = "INSERT INTO user (name, email, password, role) VALUES (?, ?, ?, ?)";
         try (Connection conn = ConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -20,66 +23,65 @@ public class UserDAO {
             stmt.setString(2, user.getEmail());
             stmt.setString(3, user.getPassword());
             stmt.setString(4, user.getRole());
-            stmt.setString(5, user.getAccessRestriction());
+            
+            LOGGER.info(stmt.toString());
 
             return stmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
+            LOGGER.info(e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
 
-    // READ ALL
-    public List<User> getAll() {
+    // Read All (only not deleted)
+    public List<User> findAll() {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM usuario WHERE is_deleted = false";
+        String sql = "SELECT * FROM user WHERE deleted_at IS NULL";
+        LOGGER.info("list useres");
 
         try (Connection conn = ConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                User user = new User();
-                user.setIdUser(rs.getInt("id_usuario"));
-                user.setName(rs.getString("nombre"));
-                user.setEmail(rs.getString("correo_electronico"));
-                user.setPassword(rs.getString("contrasena"));
-                user.setRole(rs.getString("rol"));
-                user.setAccessRestriction(rs.getString("restriccion_acceso"));
-                user.setDeleted(rs.getBoolean("is_deleted"));
-
-                users.add(user);
+                users.add(new User(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("role"),
+                        rs.getTimestamp("deleted_at")
+                ));
             }
 
         } catch (SQLException e) {
+            LOGGER.info(e.getMessage());
             e.printStackTrace();
         }
 
         return users;
     }
 
-    // READ ONE
-    public User getById(int id) {
-        String sql = "SELECT * FROM usuario WHERE id_usuario = ? AND is_deleted = false";
-
+    // Read by ID
+    public User findById(int id) {
+        String sql = "SELECT * FROM user WHERE id = ? AND deleted_at IS NULL";
         try (Connection conn = ConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    User user = new User();
-                    user.setIdUser(rs.getInt("id_usuario"));
-                    user.setName(rs.getString("nombre"));
-                    user.setEmail(rs.getString("correo_electronico"));
-                    user.setPassword(rs.getString("contrasena"));
-                    user.setRole(rs.getString("rol"));
-                    user.setAccessRestriction(rs.getString("restriccion_acceso"));
-                    user.setDeleted(rs.getBoolean("is_deleted"));
-                    return user;
-                }
+            if (rs.next()) {
+                return new User(
+                        rs.getInt("user_id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("role"),
+                        rs.getTimestamp("deleted_at")
+                );
             }
 
         } catch (SQLException e) {
@@ -89,11 +91,10 @@ public class UserDAO {
         return null;
     }
 
-    // UPDATE
+    // Update
     public boolean update(User user) {
-        String sql = "UPDATE usuario SET nombre = ?, correo_electronico = ?, contrasena = ?, rol = ?, restriccion_acceso = ? " +
-                     "WHERE id_usuario = ? AND is_deleted = false";
-
+        LOGGER.info("update method");
+        String sql = "UPDATE user SET name = ?, email = ?, password = ?, role = ? WHERE id = ?";
         try (Connection conn = ConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -101,21 +102,20 @@ public class UserDAO {
             stmt.setString(2, user.getEmail());
             stmt.setString(3, user.getPassword());
             stmt.setString(4, user.getRole());
-            stmt.setString(5, user.getAccessRestriction());
-            stmt.setInt(6, user.getIdUser());
-
+            stmt.setInt(5, user.getId());
+            LOGGER.info(stmt.toString());
             return stmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
+            LOGGER.info(e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
 
-    // SOFT DELETE
-    public boolean delete(int id) {
-        String sql = "UPDATE usuario SET is_deleted = true WHERE id_usuario = ?";
-
+    // Soft Delete
+    public boolean softDelete(int id) {
+        String sql = "UPDATE user SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?";
         try (Connection conn = ConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -127,33 +127,32 @@ public class UserDAO {
             return false;
         }
     }
-    
-    public User getByEmailAndPassword(String email, String password) {
-        String sql = "SELECT * FROM usuario WHERE correo_electronico = ? AND contrasena = ? AND is_deleted = false";
+
+    // Validate login
+    public User login(String email, String password) {
+        String sql = "SELECT * FROM user WHERE email = ? AND password = ? AND deleted_at IS NULL";
+
         try (Connection conn = ConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, email);
             stmt.setString(2, password);
+            ResultSet rs = stmt.executeQuery();
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    User user = new User();
-                    user.setIdUser(rs.getInt("id_usuario"));
-                    user.setName(rs.getString("nombre"));
-                    user.setEmail(rs.getString("correo_electronico"));
-                    user.setPassword(rs.getString("contrasena"));
-                    user.setRole(rs.getString("rol"));
-                    user.setAccessRestriction(rs.getString("restriccion_acceso"));
-                    user.setDeleted(rs.getBoolean("is_deleted"));
-                    return user;
-                }
+            if (rs.next()) {
+                return new User(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("role"),
+                        rs.getTimestamp("deleted_at")
+                );
             }
-
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return null;
     }
-
 }

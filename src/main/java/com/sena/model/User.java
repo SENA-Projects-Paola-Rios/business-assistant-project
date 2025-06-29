@@ -1,35 +1,40 @@
 package com.sena.model;
 
+import java.sql.Timestamp;
+
 public class User {
-    private int idUser;
+    private int id;
     private String name;
     private String email;
     private String password;
-    private String role;              // Values: "admin", "seller"
-    private String accessRestriction; // Optional
-    private boolean isDeleted;        // Soft delete flag
+    private String role;
+    private Timestamp deletedAt;
 
-    // --- Constructors ---
-    public User() {
-    }
-
-    public User(int idUser, String name, String email, String password, String role, String accessRestriction, boolean isDeleted) {
-        this.idUser = idUser;
+    // Constructor completo
+    public User(int id, String name, String email, String password, String role, Timestamp deletedAt) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
-        this.accessRestriction = accessRestriction;
-        this.isDeleted = isDeleted;
+        this.deletedAt = deletedAt;
     }
 
-    // --- Getters and Setters ---
-    public int getIdUser() {
-        return idUser;
+    // Constructor para crear nuevo usuario
+    public User(String name, String email, String password, String role) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
     }
 
-    public void setIdUser(int idUser) {
-        this.idUser = idUser;
+    // Getters y Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -64,31 +69,11 @@ public class User {
         this.role = role;
     }
 
-    public String getAccessRestriction() {
-        return accessRestriction;
+    public Timestamp getDeletedAt() {
+        return deletedAt;
     }
 
-    public void setAccessRestriction(String accessRestriction) {
-        this.accessRestriction = accessRestriction;
-    }
-
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
-    }
-
-    // --- Optional: toString for debugging ---
-    @Override
-    public String toString() {
-        return "User{" +
-                "idUser=" + idUser +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", role='" + role + '\'' +
-                ", isDeleted=" + isDeleted +
-                '}';
+    public void setDeletedAt(Timestamp deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }
