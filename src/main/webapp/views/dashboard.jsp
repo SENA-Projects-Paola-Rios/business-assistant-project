@@ -12,7 +12,7 @@
 <jsp:include page="partials/sidebar.jsp" />
 
 <!-- Contenido principal -->
-<div class="main-content" style="margin-left: 250px; padding: 20px;">
+<div class="main-content" style="margin-left: 10px; padding: 20px;">
     <div class="container-fluid">
         <h1 class="mt-4">Dashboard</h1>
         <p>Welcome to the Business Assistant system!</p>
