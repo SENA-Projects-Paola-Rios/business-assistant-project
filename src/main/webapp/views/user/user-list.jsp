@@ -16,7 +16,7 @@
     List<User> userList = (List<User>) request.getAttribute("users");
 %>
 
-<div class="main-content" style="margin-left: 250px; padding: 20px;">
+<div class="main-content" style="margin-left: 10px; padding: 20px;">
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2>User List</h2>
