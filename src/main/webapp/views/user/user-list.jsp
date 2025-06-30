@@ -1,3 +1,10 @@
+<%
+    
+    if (session == null || session.getAttribute("loggedUser") == null) {
+        response.sendRedirect(request.getContextPath() + "/login.jsp");
+        return;
+    }
+%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.sena.model.User" %>
