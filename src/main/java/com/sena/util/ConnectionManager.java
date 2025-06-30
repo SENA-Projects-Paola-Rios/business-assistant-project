@@ -22,19 +22,14 @@ public class ConnectionManager {
             if (input == null) {
                 throw new RuntimeException("Cannot find config.properties");
             }
-            LOGGER.info("***************/////////////////////////*****************");
+            
             prop.load(input);
             URL = prop.getProperty("db.url");
             USER = prop.getProperty("db.user");
-            PASSWORD = prop.getProperty("db.password");
-            LOGGER.info(URL);
-            LOGGER.info(USER);
-            LOGGER.info(PASSWORD);
-            
+            PASSWORD = prop.getProperty("db.password");           
            
 
         } catch (Exception e) {
-            LOGGER.info("Error loading database configuration");
             e.printStackTrace();
             LOGGER.info(e.getLocalizedMessage());
             LOGGER.info(e.getMessage());

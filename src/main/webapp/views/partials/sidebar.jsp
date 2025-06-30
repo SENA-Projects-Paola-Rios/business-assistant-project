@@ -1,4 +1,5 @@
 <div class="sidebar">
+    <a href="<%=request.getContextPath()%>/CategoryController?action=list">Categories</a>
     <a href="<%=request.getContextPath()%>/UserController?action=list">Users</a>
     <a href="<%=request.getContextPath()%>/LogoutController">Logout</a>
 </div>
